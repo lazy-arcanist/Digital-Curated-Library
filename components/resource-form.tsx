@@ -142,70 +142,57 @@ export function ResourceForm({ categories, types, editing, onSubmit, onCancel }:
   const errorId = (field: string) => `${uid}-${field}-error`
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-4">
-      <div className="space-y-1.5">
-        <label htmlFor={`${uid}-name`} className="text-sm font-medium">
-          Name
-        </label>
-        <input
-          id={`${uid}-name`}
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          placeholder="e.g. Figma"
-          aria-invalid={!!errors.name}
-          aria-describedby={errors.name ? errorId('name') : undefined}
-          className={cn(fieldClass, 'h-11')}
-        />
-        <FieldError id={errorId('name')} message={errors.name} />
-      </div>
-
-      <div className="space-y-1.5">
-        <label htmlFor={`${uid}-description`} className="text-sm font-medium">
-          Description
-        </label>
-        <textarea
-          id={`${uid}-description`}
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          rows={3}
-          placeholder="What does it do and why is it useful?"
-          aria-invalid={!!errors.description}
-          aria-describedby={errors.description ? errorId('description') : undefined}
-          className={cn(fieldClass, 'resize-none py-2.5 leading-relaxed')}
-        />
-        <FieldError id={errorId('description')} message={errors.description} />
-      </div>
-
-      <div className="space-y-1.5">
-        <label htmlFor={`${uid}-category`} className="text-sm font-medium">
-          Category
-        </label>
-        <div className="relative">
-          <select
-            id={`${uid}-category`}
-            value={categoryId}
-            onChange={(event) => setCategoryId(event.target.value)}
-            aria-invalid={!!errors.categoryId}
-            aria-describedby={errors.categoryId ? errorId('category') : undefined}
-            className={cn(fieldClass, 'h-11 appearance-none pr-10', !categoryId && 'text-muted-foreground')}
-          >
-            <option value="" disabled>
-              Select a category
-            </option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id} className="text-foreground">
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown
-            className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-muted-foreground"
-            aria-hidden="true"
+    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+      {/* Row 1: Name + Category */}
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <label htmlFor={`${uid}-name`} className="text-sm font-medium">
+            Name
+          </label>
+          <input
+            id={`${uid}-name`}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="e.g. Figma"
+            aria-invalid={!!errors.name}
+            aria-describedby={errors.name ? errorId('name') : undefined}
+            className={cn(fieldClass, 'h-11')}
           />
+          <FieldError id={errorId('name')} message={errors.name} />
         </div>
-        <FieldError id={errorId('category')} message={errors.categoryId} />
+
+        <div className="space-y-1.5">
+          <label htmlFor={`${uid}-category`} className="text-sm font-medium">
+            Category
+          </label>
+          <div className="relative">
+            <select
+              id={`${uid}-category`}
+              value={categoryId}
+              onChange={(event) => setCategoryId(event.target.value)}
+              aria-invalid={!!errors.categoryId}
+              aria-describedby={errors.categoryId ? errorId('category') : undefined}
+              className={cn(fieldClass, 'h-11 appearance-none pr-10', !categoryId && 'text-muted-foreground')}
+            >
+              <option value="" disabled>
+                Select a category
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id} className="text-foreground">
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              className="pointer-events-none absolute top-1/2 right-3.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
+          </div>
+          <FieldError id={errorId('category')} message={errors.categoryId} />
+        </div>
       </div>
 
+      {/* Row 2: Type chips, full width */}
       <fieldset className="min-w-0 space-y-1.5">
         <legend className="text-sm font-medium">
           Type <span className="font-normal text-muted-foreground">(pick one or more)</span>
@@ -242,6 +229,25 @@ export function ResourceForm({ categories, types, editing, onSubmit, onCancel }:
         <FieldError id={errorId('types')} message={errors.types} />
       </fieldset>
 
+      {/* Row 3: Description, full width */}
+      <div className="space-y-1.5">
+        <label htmlFor={`${uid}-description`} className="text-sm font-medium">
+          Description
+        </label>
+        <textarea
+          id={`${uid}-description`}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+          rows={4}
+          placeholder="What does it do and why is it useful?"
+          aria-invalid={!!errors.description}
+          aria-describedby={errors.description ? errorId('description') : undefined}
+          className={cn(fieldClass, 'resize-y py-2.5 leading-relaxed')}
+        />
+        <FieldError id={errorId('description')} message={errors.description} />
+      </div>
+
+      {/* Row 4: Tags */}
       <div className="space-y-1.5">
         <label htmlFor={`${uid}-tags`} className="text-sm font-medium">
           Tags <span className="font-normal text-muted-foreground">(optional)</span>
@@ -250,6 +256,7 @@ export function ResourceForm({ categories, types, editing, onSubmit, onCancel }:
         <p className="text-xs text-muted-foreground">Press Enter or comma to add a tag.</p>
       </div>
 
+      {/* Row 5: Links, one row per link (name | URL | remove) */}
       <fieldset className="min-w-0 space-y-2">
         <legend className="text-sm font-medium">Links</legend>
         <ul className="space-y-3 pt-1">
@@ -257,36 +264,36 @@ export function ResourceForm({ categories, types, editing, onSubmit, onCancel }:
             const linkError = linkErrors[draft.key]
             const linkErrorId = `${uid}-link-${draft.key}-error`
             return (
-              <li key={draft.key} className="space-y-2 rounded-xl border border-border bg-secondary/30 p-3">
-                <div className="flex items-center gap-2">
+              <li key={draft.key} className="space-y-1.5">
+                <div className="grid items-center gap-2 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto]">
                   <input
                     value={draft.label}
                     onChange={(event) => updateLink(draft.key, { label: event.target.value })}
                     placeholder="Link name, e.g. Official website"
                     aria-label={`Link ${index + 1} name`}
-                    className={cn(fieldClass, 'h-10 min-w-0 flex-1')}
+                    className={cn(fieldClass, 'h-11')}
+                  />
+                  <input
+                    type="text"
+                    inputMode="url"
+                    value={draft.url}
+                    onChange={(event) => updateLink(draft.key, { url: event.target.value })}
+                    placeholder="https://example.com"
+                    aria-label={`Link ${index + 1} URL`}
+                    aria-invalid={!!linkError}
+                    aria-describedby={linkError ? linkErrorId : undefined}
+                    className={cn(fieldClass, 'h-11')}
                   />
                   <button
                     type="button"
                     onClick={() => removeLink(draft.key)}
                     disabled={links.length === 1}
                     aria-label={`Remove link ${index + 1}`}
-                    className="grid size-10 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:pointer-events-none disabled:opacity-30"
+                    className="grid size-10 shrink-0 place-items-center justify-self-end rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:pointer-events-none disabled:opacity-30"
                   >
                     <Trash2 className="size-4" aria-hidden="true" />
                   </button>
                 </div>
-                <input
-                  type="text"
-                  inputMode="url"
-                  value={draft.url}
-                  onChange={(event) => updateLink(draft.key, { url: event.target.value })}
-                  placeholder="https://example.com"
-                  aria-label={`Link ${index + 1} URL`}
-                  aria-invalid={!!linkError}
-                  aria-describedby={linkError ? linkErrorId : undefined}
-                  className={cn(fieldClass, 'h-10')}
-                />
                 <FieldError id={linkErrorId} message={linkError} />
               </li>
             )
@@ -308,11 +315,11 @@ export function ResourceForm({ categories, types, editing, onSubmit, onCancel }:
         </p>
       )}
 
-      <div className="flex gap-2 pt-1">
+      <div className="flex flex-wrap gap-2 pt-1">
         <button
           type="submit"
           disabled={submitting}
-          className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60"
         >
           {editing ? (
             <Save className="size-4" aria-hidden="true" />

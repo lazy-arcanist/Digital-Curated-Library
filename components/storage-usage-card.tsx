@@ -41,14 +41,14 @@ export function StorageUsageCard({ className }: { className?: string }) {
         className,
       )}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <span className="grid size-10 shrink-0 place-items-center rounded-full bg-accent text-accent-foreground">
             <Database className="size-5" aria-hidden="true" />
           </span>
-          <div>
+          <div className="min-w-0">
             <h2 id="storage-heading" className="text-lg font-semibold tracking-tight">
-              Database storage usage
+              Database storage
             </h2>
             <p className="text-sm text-muted-foreground">Supabase Free plan, 500 MB limit</p>
           </div>
@@ -57,15 +57,16 @@ export function StorageUsageCard({ className }: { className?: string }) {
           type="button"
           onClick={() => void mutate()}
           disabled={isValidating}
-          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:pointer-events-none"
+          aria-label="Refresh storage usage"
+          title="Refresh"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:pointer-events-none"
         >
           <RefreshCw className={cn('size-4', isValidating && 'animate-spin')} aria-hidden="true" />
-          Refresh
         </button>
       </div>
 
       {data ? (
-        <div className="mt-6">
+        <div className="mt-5">
           <p className="flex flex-wrap items-baseline gap-x-2 text-sm" role="status" aria-live="polite">
             <span className="text-2xl font-semibold tracking-tight tabular-nums">
               {formatMegabytes(data.usedBytes)}
@@ -81,7 +82,7 @@ export function StorageUsageCard({ className }: { className?: string }) {
             aria-valuemax={100}
             aria-valuenow={Math.min(100, Number(data.percent.toFixed(2)))}
             aria-valuetext={`${formatMegabytes(data.usedBytes)} of 500 MB used`}
-            className="mt-3 h-3 overflow-hidden rounded-full bg-secondary"
+            className="mt-3 h-2.5 overflow-hidden rounded-full bg-secondary"
           >
             <div
               className={cn(
@@ -112,11 +113,11 @@ export function StorageUsageCard({ className }: { className?: string }) {
           )}
         </div>
       ) : error ? (
-        <p role="alert" className="mt-6 text-sm font-medium text-destructive">
+        <p role="alert" className="mt-5 text-sm font-medium text-destructive">
           Could not measure database storage. Try refreshing.
         </p>
       ) : (
-        <p role="status" className="mt-6 text-sm text-muted-foreground">
+        <p role="status" className="mt-5 text-sm text-muted-foreground">
           Measuring storage…
         </p>
       )}

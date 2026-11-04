@@ -1,7 +1,7 @@
 'use client'
 
 import { useId, useMemo, useState } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import { useLibrary } from '@/lib/library-store'
 
 export function TypeManager() {
@@ -46,7 +46,7 @@ export function TypeManager() {
   return (
     <div className="space-y-4">
       <form onSubmit={handleSubmit} noValidate className="space-y-1.5">
-        <label htmlFor={inputId} className="text-sm font-medium">
+        <label htmlFor={inputId} className="sr-only">
           New type
         </label>
         <div className="flex gap-2">
@@ -65,10 +65,10 @@ export function TypeManager() {
           <button
             type="submit"
             disabled={pending}
-            className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-60"
+            aria-label="Add type"
+            className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-60"
           >
             <Plus className="size-4" aria-hidden="true" />
-            Add
           </button>
         </div>
         {error && (
@@ -78,27 +78,31 @@ export function TypeManager() {
         )}
       </form>
 
-      <ul className="divide-y divide-border rounded-xl border border-border">
+      <ul className="flex flex-wrap gap-2">
         {types.map((item) => {
           const count = counts.get(item.name) ?? 0
           return (
-            <li key={item.id} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
-              <span className="min-w-0 truncate text-sm">{item.name}</span>
-              <span className="flex shrink-0 items-center gap-2">
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {count} {count === 1 ? 'resource' : 'resources'}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleDelete(item.id)}
-                  disabled={count > 0}
-                  aria-label={`Delete type ${item.name}`}
-                  title={count > 0 ? 'Only unused types can be deleted' : 'Delete type'}
-                  className="grid size-8 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:pointer-events-none disabled:opacity-30"
-                >
-                  <Trash2 className="size-4" aria-hidden="true" />
-                </button>
+            <li
+              key={item.id}
+              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border bg-secondary/40 pr-1 pl-3 text-xs"
+            >
+              <span className="max-w-40 truncate">{item.name}</span>
+              <span
+                className="text-muted-foreground tabular-nums"
+                title={`${count} ${count === 1 ? 'resource' : 'resources'}`}
+              >
+                {count}
               </span>
+              <button
+                type="button"
+                onClick={() => handleDelete(item.id)}
+                disabled={count > 0}
+                aria-label={`Delete type ${item.name}`}
+                title={count > 0 ? 'Only unused types can be deleted' : 'Delete type'}
+                className="grid size-6 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:pointer-events-none disabled:opacity-30"
+              >
+                <X className="size-3.5" aria-hidden="true" />
+              </button>
             </li>
           )
         })}
