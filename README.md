@@ -18,15 +18,6 @@ A personal, searchable library of curated resources: websites, tools, courses, r
 - Database storage usage card for the Supabase free plan (500 MB limit)
 - Admin area protected by an admin gate
 
-## Tech stack
-
-- [Next.js](https://nextjs.org/) (App Router) with TypeScript
-- [Tailwind CSS](https://tailwindcss.com/) and [shadcn/ui](https://ui.shadcn.com/) components
-- [Supabase](https://supabase.com/) (Postgres) as the database
-- [SWR](https://swr.vercel.app/) for data refreshing
-- [lucide-react](https://lucide.dev/) icons
-- [pnpm](https://pnpm.io/) as the package manager
-
 ## Getting started
 
 ### Prerequisites
@@ -51,6 +42,10 @@ Create a `.env.local` file in the project root:
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
+bash
+git add README.md
+git commit -m "Add project README"
+git push
 
 You can find both values in your Supabase dashboard under **Project Settings → API**. `.env.local` is git-ignored, so your keys are never committed.
 
