@@ -24,7 +24,7 @@ A personal, searchable library of curated resources: websites, tools, courses, r
 
 - Node.js
 - pnpm
-- A Supabase project
+- A Supabase project (see [Database setup](#database-setup-supabase) below)
 
 ### Installation
 
@@ -34,44 +34,36 @@ cd Digital-Curated-Library
 pnpm install
 ```
 
-### Environment variables
+Then follow the database setup below before starting the app.
 
-Create a `.env.local` file in the project root:
+## Database setup (Supabase)
 
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
-bash
-git add README.md
-git commit -m "Add project README"
-git push
+The app reads and writes everything (resources, categories, types) in Supabase, so it needs a database before anything shows up.
 
-You can find both values in your Supabase dashboard under **Project Settings → API**. `.env.local` is git-ignored, so your keys are never committed.
+1. Create a free project at [supabase.com](https://supabase.com/).
+2. Open **SQL Editor → New query**, paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**. This creates the tables, access policies, the optional database-size function and starter categories/types.
+3. Open **Project Settings → API** and copy the **Project URL** and the **publishable (anon) key**.
+4. In [`lib/supabase/client.ts`](lib/supabase/client.ts), replace the value of `SUPABASE_URL` with your Project URL.
+5. Create a `.env.local` file in the project root (it is git-ignored, so your key is never committed):
 
-### Run the app
+   ```bash
+   NEXT_PUBLIC_LIBRARY_SUPABASE_KEY=your-publishable-anon-key
+   ```
 
-```bash
-pnpm dev
-```
+6. Start the app (restart it if it was already running):
 
-Then open [http://localhost:3000](http://localhost:3000).
+   ```bash
+   pnpm dev
+   ```
 
-## Optional: exact database size
+   Then open [http://localhost:3000](http://localhost:3000).
 
-By default the storage card shows an estimate based on the rows in your tables. To show the exact size reported by Postgres, run this once in the Supabase SQL editor:
+If you deploy (for example to Vercel), add `NEXT_PUBLIC_LIBRARY_SUPABASE_KEY` in the hosting dashboard too, because `.env.local` is not uploaded.
 
-```sql
-create or replace function public.get_database_size()
-returns bigint
-language sql
-stable
-security definer
-set search_path = ''
-as $$ select pg_catalog.pg_database_size(pg_catalog.current_database()); $$;
+### Security notes
 
-grant execute on function public.get_database_size() to anon, authenticated;
-```
+- The admin page is protected by a password defined in `lib/admin-access.ts`. This check runs in the browser, so it only deters casual edits. Change the default before using the app.
+- `supabase/schema.sql` allows anyone with the public key to read and write the tables, because the app has no real login. For a public deployment, replace those policies with ones that restrict writes (for example by adding Supabase Auth).
 
 ## Project structure
 
@@ -79,7 +71,7 @@ grant execute on function public.get_database_size() to anon, authenticated;
 app/          Next.js app router (layout, page, global styles)
 components/   UI components (library views, admin view, forms, managers)
 lib/          Data store, types, formatting helpers, Supabase client
-public/       Static assets
+supabase/     Database schema (schema.sql)
 ```
 
 ## Scripts
